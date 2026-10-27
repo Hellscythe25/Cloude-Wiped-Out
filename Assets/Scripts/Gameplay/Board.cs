@@ -7,8 +7,14 @@ namespace CloudGame.Gameplay
     /// Tablero de minas. Modelo puro, sin dependencias de Unity, con mines
     /// colocadas por semilla para que las partidas sean reproducibles.
     /// </summary>
-    public sealed class Board
+    public sealed class Board : IBoardReadModel
     {
+        /// <summary>Valor de <see cref="PublicCells"/> para una celda oculta.</summary>
+        public const int HiddenCell = -1;
+
+        /// <summary>Valor de <see cref="PublicCells"/> para una mina ya revelada.</summary>
+        public const int MineCell = -2;
+
         private readonly bool[] mines;
         private readonly bool[] revealed;
         private readonly int[] adjacentMines;
@@ -81,6 +87,45 @@ namespace CloudGame.Gameplay
             revealedThisMove.Clear();
             FloodFill(index);
             return revealedThisMove;
+        }
+
+        /// <summary>
+        /// Vista que el servidor puede enseñar a los clientes, una entrada por celda:
+        /// <see cref="HiddenCell"/> si sigue oculta, <see cref="MineCell"/> si es una
+        /// mina ya pisada, o el número de minas vecinas (0-8) si es una celda segura
+        /// revelada. Las minas ocultas nunca aparecen aquí.
+        /// </summary>
+        public int[] PublicCells()
+        {
+            var result = new int[CellCount];
+            for (int i = 0; i < result.Length; i++)
+            {
+                if (!revealed[i])
+                {
+                    result[i] = HiddenCell;
+                }
+                else
+                {
+                    result[i] = mines[i] ? MineCell : adjacentMines[i];
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>Índices de todas las minas. Solo debe usarse cuando la partida ha terminado.</summary>
+        public int[] MineIndices()
+        {
+            var result = new List<int>(MineCount);
+            for (int i = 0; i < CellCount; i++)
+            {
+                if (mines[i])
+                {
+                    result.Add(i);
+                }
+            }
+
+            return result.ToArray();
         }
 
         /// <summary>Celdas seguras todavía sin revelar, que son las que hay que limpiar.</summary>

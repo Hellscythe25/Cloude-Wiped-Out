@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <!-- Permite correr las pruebas en un equipo que solo tenga un runtime más nuevo. -->
+    <RollForward>Major</RollForward>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <!-- Que las pruebas no entren en el .ccm que se despliega. -->
+    <IsPublishable>false</IsPublishable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="NUnit" Version="4.2.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+  <!--
+    Las pruebas del motor que ya existían para Unity (Assets/Tests/EditMode) corren aquí
+    tal cual, sin abrir el editor: el motor es C# puro.
+  -->
+  <ItemGroup>
+    <Compile Include="..\..\..\Assets\Tests\EditMode\*.cs" LinkBase="EngineTests" />
+  </ItemGroup>
+
+  <!--
+    Los modelos del cliente (la vista que lee Unity y la versión del protocolo) son C# puro: se
+    compilan aquí para comprobar que el JSON del servidor encaja con ellos.
+  -->
+  <ItemGroup>
+    <Compile Include="..\..\..\Assets\Scripts\Online\OnlineMatchModels.cs" LinkBase="ClientModels" />
+    <Compile Include="..\..\..\Assets\Scripts\Online\GameProtocol.cs" LinkBase="ClientModels" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Project\WipedOut.csproj" />
+  </ItemGroup>
+
+</Project>

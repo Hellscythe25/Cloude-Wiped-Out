@@ -7,7 +7,8 @@
         "Unity.Services.Core.Configuration",
         "Unity.Services.Authentication",
         "Unity.Services.Authentication.PlayerAccounts",
-        "Unity.Services.CloudSave"
+        "Unity.Services.CloudSave",
+        "Unity.Services.CloudCode"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

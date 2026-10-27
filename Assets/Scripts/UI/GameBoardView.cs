@@ -36,14 +36,41 @@ namespace CloudGame.UI
 
         private readonly List<CellView> cells = new List<CellView>();
         private GameScreenController controller;
+        private System.Action<int> cellClicked;
 
         public void Initialize(GameScreenController owner)
         {
             controller = owner;
         }
 
+        /// <summary>
+        /// Alternativa para quien no es el <see cref="GameScreenController"/> local (por
+        /// ejemplo la pantalla online): recibe la pulsación como un callback.
+        /// </summary>
+        public void Initialize(System.Action<int> onCellClicked)
+        {
+            cellClicked = onCellClicked;
+        }
+
+        /// <summary>
+        /// Para crear la vista desde código en lugar de desde una escena: indica dónde se
+        /// dibuja la rejilla y con qué fuente.
+        /// </summary>
+        public void Configure(RectTransform gridRoot, Font textFont)
+        {
+            grid = gridRoot;
+            font = textFont;
+        }
+
+        /// <summary>Tamaño de celda y separación. Hay que llamarlo antes de <see cref="Build"/>.</summary>
+        public void SetLayout(float newCellSize, float newSpacing)
+        {
+            cellSize = newCellSize;
+            spacing = newSpacing;
+        }
+
         /// <summary>Recrea la rejilla para el tamaño del tablero indicado.</summary>
-        public void Build(Board board)
+        public void Build(IBoardReadModel board)
         {
             if (grid == null)
             {
@@ -93,7 +120,7 @@ namespace CloudGame.UI
         /// Pinta el estado actual. <paramref name="revealMines"/> muestra todas
         /// las minas, y solo se usa cuando la partida ha terminado.
         /// </summary>
-        public void Paint(Board board, bool revealMines)
+        public void Paint(IBoardReadModel board, bool revealMines)
         {
             for (int i = 0; i < cells.Count && i < board.CellCount; i++)
             {
@@ -101,7 +128,7 @@ namespace CloudGame.UI
             }
         }
 
-        private void PaintCell(CellView cell, Board board, int index, bool revealMines)
+        private void PaintCell(CellView cell, IBoardReadModel board, int index, bool revealMines)
         {
             bool revealed = board.IsRevealed(index);
             bool mine = board.IsMine(index);
@@ -200,7 +227,11 @@ namespace CloudGame.UI
 
         private void OnCellClicked(int index)
         {
-            if (controller != null)
+            if (cellClicked != null)
+            {
+                cellClicked(index);
+            }
+            else if (controller != null)
             {
                 controller.OnCellClicked(index);
             }

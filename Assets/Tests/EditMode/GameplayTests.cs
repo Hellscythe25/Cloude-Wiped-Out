@@ -1,7 +1,6 @@
 using System.Linq;
 using CloudGame.Gameplay;
 using NUnit.Framework;
-using UnityEngine;
 
 namespace CloudGame.Tests.EditMode
 {
@@ -115,7 +114,7 @@ namespace CloudGame.Tests.EditMode
 
                 int x = i % 3;
                 int y = i / 3;
-                bool vecinas = Mathf.Abs(x - mx) <= 1 && Mathf.Abs(y - my) <= 1;
+                bool vecinas = System.Math.Abs(x - mx) <= 1 && System.Math.Abs(y - my) <= 1;
                 Assert.That(
                     board.AdjacentMines(i),
                     Is.EqualTo(vecinas ? 1 : 0),

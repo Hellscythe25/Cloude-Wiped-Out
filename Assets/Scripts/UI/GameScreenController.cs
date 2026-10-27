@@ -1,4 +1,5 @@
 using CloudGame.Gameplay;
+using CloudGame.Online;
 using CloudGame.Save;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -72,7 +73,21 @@ namespace CloudGame.UI
                 playAgainButton.onClick.AddListener(StartMatch);
             }
 
+            AttachOnlineScreen();
             StartMatch();
+        }
+
+        /// <summary>
+        /// Añade el botón ONLINE y la pantalla de partida en línea encima del juego local.
+        /// Se construye por código para no depender de editar la escena.
+        /// </summary>
+        private void AttachOnlineScreen()
+        {
+            Canvas canvas = menuButton != null ? menuButton.GetComponentInParent<Canvas>() : FindFirstObjectByType<Canvas>();
+            if (canvas != null && levelText != null)
+            {
+                OnlineMatchScreen.Create(canvas.rootCanvas, levelText.font);
+            }
         }
 
         public void StartMatch()
@@ -147,6 +162,9 @@ namespace CloudGame.UI
             {
                 // match.Level ya es el nivel nuevo, asi que se guarda el que se acaba de superar.
                 CloudSave?.RecordLevelCompleted(completedLevel);
+
+                // Antes el progreso solo se anotaba en memoria y nunca se subía a Cloud Save.
+                _ = CloudSave?.SaveAsync();
             }
 
             if (boardView != null)
@@ -208,6 +226,7 @@ namespace CloudGame.UI
             }
 
             CloudSave?.RecordGameLost();
+            _ = CloudSave?.SaveAsync();
         }
 
         private void SetGameOverVisible(bool visible)

@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Configurations>Debug;Release</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Com.Unity.Services.CloudCode.Apis" Version="0.0.26" />
+    <PackageReference Include="Com.Unity.Services.CloudCode.Core" Version="0.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <!--
+    El motor de reglas vive UNA sola vez, en Assets/Scripts/Gameplay (C# puro, sin Unity).
+    El juego local lo usa desde Unity y el servidor lo compila desde aquí, así que las
+    reglas no pueden divergir entre los dos.
+  -->
+  <ItemGroup>
+    <Compile Include="..\..\..\Assets\Scripts\Gameplay\*.cs" LinkBase="Gameplay" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <PublishReadyToRunComposite>true</PublishReadyToRunComposite>
+  </PropertyGroup>
+
+</Project>

@@ -112,3 +112,9 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# --- Wiped-Out ---
+# El modulo de Cloud Code SI necesita su .sln y sus .csproj en el repo: sin ellos no se
+# puede reconstruir ni desplegar. La plantilla de Unity los ignora, asi que se reactivan.
+!/CloudCode.Modules/**/*.sln
+!/CloudCode.Modules/**/*.csproj
